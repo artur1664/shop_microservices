@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.microservices.products.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ActiveProfiles("integration")
 @DataMongoTest
 class ProductRepositoryTest {
 

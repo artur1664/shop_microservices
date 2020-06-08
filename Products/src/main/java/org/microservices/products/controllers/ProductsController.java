@@ -34,7 +34,6 @@ public class ProductsController {
 
     @GetMapping
     public Flux<ProductDto> getAll(){
-        log.info("getting all data");
         return productService.getAll();
     }
 }
