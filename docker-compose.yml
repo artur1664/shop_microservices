@@ -1,0 +1,22 @@
+version: '3'
+services:
+  mongo:
+    hostname: mongo
+    image: mongo
+    container_name: mongodb_container
+    environment:
+      - MONGO_INITDB_DATABASE=initdb
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_volume:/data/db
+    networks:
+      - microservices
+
+volumes:
+  mongodb_volume:
+
+networks:
+  microservices:

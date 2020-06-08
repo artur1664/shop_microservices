@@ -1,4 +1,4 @@
-package org.microservices.products.model;
+package org.microservices.products.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 public class ProductDto {
 
-    private Long id;
+    private String id;
     private String name;
     private BigDecimal price;
     private String description;
