@@ -12,7 +12,7 @@
     <artifactId>products</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Products</name>
-    <description>Spring Boot application with producs microservice</description>
+    <description>Spring Boot application with products microservice</description>
 
     <properties>
         <java.version>11</java.version>
