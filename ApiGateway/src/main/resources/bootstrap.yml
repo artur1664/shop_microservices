@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: productService
+          uri: lb://products-service
+          predicates:
+            - Path=/api/**
+    config:
+      fail-fast: true
