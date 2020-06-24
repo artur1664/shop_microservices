@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      #      uri: mongodb://user:user@localhost:27017,localhost:27018,localhost:27019/shopdb
+      uri: mongodb://user:user@mongodb1:27017,mongodb2:27018,mongodb3:27019/shopdb

@@ -11,6 +11,7 @@
 
     <modules>
         <module>Products</module>
+        <module>StockManager</module>
     </modules>
 
     <properties>

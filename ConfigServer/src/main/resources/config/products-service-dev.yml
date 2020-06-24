@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://user:user@localhost:27017/shopdb #for development check which replica is primary and use it
+#      uri: mongodb://user:user@localhost:27017,localhost:27018,localhost:27019/shopdb #not working host exception
+#      I am using mongo replica set which fails with this config. Use uri param instead
+#      host: localhost
+#      password: user
+#      username: user
+#      database: shopdb

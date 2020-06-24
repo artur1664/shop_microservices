@@ -1,7 +1,0 @@
-spring:
-  data:
-    mongodb:
-      host: localhost
-      password: user
-      username: user
-      database: microservices
