@@ -14,7 +14,7 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private OrderMapper mapper = OrderMapper.INSTANCE;
+    private final OrderMapper mapper = OrderMapper.INSTANCE;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository) {
@@ -25,6 +25,14 @@ public class OrderServiceImpl implements OrderService {
     public Mono<OrderDto> addNewOrder(OrderDto orderDto) {
         Order newOrder = mapper.dtoToOrder(orderDto);
         newOrder.setOrderUuid(UUID.randomUUID());
-        return orderRepository.save(newOrder).map(order -> mapper.orderToDto(order));
+        return orderRepository.save(newOrder).map(mapper::orderToDto);
+    }
+
+    @Override
+    public Mono<OrderDto> getOne(UUID orderUuid) {
+        if (orderUuid == null) {
+            throw new IllegalArgumentException("uuid cannot be null");
+        }
+        return orderRepository.findByOrderUuid(orderUuid).map(mapper::orderToDto);
     }
 }
