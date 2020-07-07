@@ -1,0 +1,11 @@
+server:
+  port: 8060
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  data:
+    mongodb:
+      uri: mongodb://user:user@localhost:27018/shopdb
+
