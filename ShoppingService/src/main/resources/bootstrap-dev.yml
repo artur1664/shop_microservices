@@ -6,6 +6,14 @@ spring:
       uri: http://localhost:8888
       fail-fast: true
 
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 15
+      permittedNumberOfCallsInHalfOpenState: 5
+      waitDurationInOpenState: 10000
+      failureRateThreshold: 10
+
 delivery:
   base:
     url: http://localhost:8060
