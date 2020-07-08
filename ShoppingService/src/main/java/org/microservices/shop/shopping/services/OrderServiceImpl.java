@@ -4,6 +4,7 @@ import org.microservices.shop.shopping.mappers.OrderMapper;
 import org.microservices.shop.shopping.model.Order;
 import org.microservices.shop.shopping.model.dto.OrderDto;
 import org.microservices.shop.shopping.repostitory.OrderRepository;
+import org.microservices.shop.shopping.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -22,10 +23,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Mono<OrderDto> addNewOrder(OrderDto orderDto) {
+    public Mono<UUID> addNewOrder(OrderDto orderDto) {
         Order newOrder = mapper.dtoToOrder(orderDto);
         newOrder.setOrderUuid(UUID.randomUUID());
-        return orderRepository.save(newOrder).map(mapper::orderToDto);
+        orderRepository.save(newOrder);
+        return Mono.just(newOrder.getOrderUuid());
     }
 
     @Override
