@@ -30,7 +30,6 @@ class ProductRepositoryTest {
 
         //then
         assertNotNull(result);
-        assertNotNull(result.get_id());
 
     }
 
