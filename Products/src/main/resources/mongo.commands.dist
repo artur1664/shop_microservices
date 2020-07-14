@@ -1,0 +1,26 @@
+//create user
+db.createUser(
+   {
+     user: "user",
+     pwd: "user",
+     roles: [ "readWrite" ]
+   }
+)
+//create database
+use DB_NAME
+//create collection - simply perform insert
+db.COLLECTION_NAME.insert({JSON object})
+
+//list databases (at leas one document must be present)
+show dbs
+//show actual database
+db
+//list documents in collection
+db.COLLECTION_NAME.find().pretty()
+//sorting
+-1 desc 1 asc
+
+//!! just remember to use indexes on frequently used fields in queries
+
+//analyzing database
+https://www.tutorialspoint.com/mongodb/mongodb_analyzing_queries.htm
