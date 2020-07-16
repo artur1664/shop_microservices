@@ -12,4 +12,13 @@ public interface ProductSearchService {
     Flux<ProductDto> getByPriceRange(String from, String to);
 
     Flux<ProductDto> getByPriceGreaterThen(String from);
+
+    Flux<ProductDto> getByPriceRange(Float from, Float to);
+
+    Flux<ProductDto> findByIndexAndPricePageable(int indexFrom, int indexTo, Float priceFrom, Float priceTo, int pageSize, int page);
+
+    Flux<ProductDto> returnProductsOnly();
+
+    Flux<ProductDto> returnManufacturersOnly();
+
 }

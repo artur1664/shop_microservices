@@ -46,4 +46,21 @@ public class ProductRoutes {
                 .andRoute(GET(requestMapping + "priceFrom"), req -> ok().body(searchService.getByPriceGreaterThen(req.queryParam("from").orElse("no results")), ProductDto.class))
                 .andRoute(GET(requestMapping + "price"), req -> ok().body(searchService.getByPriceRange(req.queryParam("from").orElse(""), req.queryParam("to").orElse("no results")), Product.class));
     }
+
+    @Bean
+    RouterFunction<ServerResponse> customSearchOperations() {
+        String requestMapping = "/api/v1/route/products/custom/search/";
+        return RouterFunctions
+                .route(GET(requestMapping), req -> ok().body(searchService.getByPriceRange(Float.parseFloat(req.queryParam("from").orElse("0.0")), Float.parseFloat(req.queryParam("to").orElse("0.0"))), ProductDto.class))
+                .andRoute(GET(requestMapping + "page"), req -> ok().body(searchService.findByIndexAndPricePageable(
+                        Integer.parseInt(req.queryParam("idxFrom").orElse("0.0")),
+                        Integer.parseInt(req.queryParam("idxTo").orElse("0.0")),
+                        Float.parseFloat(req.queryParam("from").orElse("0.0")),
+                        Float.parseFloat(req.queryParam("to").orElse("0.0")),
+                        Integer.parseInt(req.queryParam("pageSize").orElse("0")),
+                        Integer.parseInt(req.queryParam("page").orElse("0"))
+                ), ProductDto.class))
+                .andRoute(GET(requestMapping + "products"), req -> ok().body(searchService.returnProductsOnly(), ProductDto.class))
+                .andRoute(GET(requestMapping + "manufacturers"), req -> ok().body(searchService.returnManufacturersOnly(), ProductDto.class));
+    }
 }

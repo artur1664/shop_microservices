@@ -33,16 +33,37 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         return productRepository.findByProductDetailsManufacturerName(name).map(mapper::productToDto);
     }
 
+    //this fails
     @Override
     public Flux<ProductDto> getByPriceRange(String from, String to) {
         Float p1 = Float.valueOf(from);
         Float p2 = Float.valueOf(to);
-        return productRepository.findByPriceGreaterThanAndPriceLessThan(p1, p2).map(mapper::productToDto);
+        return productRepository.findByPriceBetween(p1, p2).map(mapper::productToDto);
     }
 
     @Override
     public Flux<ProductDto> getByPriceGreaterThen(String from) {
         Float p1 = Float.valueOf(from);
         return productRepository.findByPriceGreaterThan(p1).map(mapper::productToDto);
+    }
+
+    @Override
+    public Flux<ProductDto> getByPriceRange(Float from, Float to) {
+        return productRepository.findByPriceRange(from, to).map(mapper::productToDto);
+    }
+
+    @Override
+    public Flux<ProductDto> findByIndexAndPricePageable(int indexFrom, int indexTo, Float priceFrom, Float priceTo, int pageSize, int page) {
+        return productRepository.findByIndexAndPricePageable(indexFrom, indexTo, priceFrom, priceTo, pageSize, page).map(mapper::productToDto);
+    }
+
+    @Override
+    public Flux<ProductDto> returnProductsOnly() {
+        return productRepository.returnProductsOnly().map(mapper::productToDto);
+    }
+
+    @Override
+    public Flux<ProductDto> returnManufacturersOnly() {
+        return productRepository.returnManufacturersOnly().map(mapper::productToDto);
     }
 }
