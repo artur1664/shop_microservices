@@ -18,6 +18,12 @@ public class ProductRoutes {
 
     //TODO exception handling with router functions
 
+    //TODO multi document transactions
+
+    //TODO normalized documents - with references
+
+    //TODO multi document transactions - to provide atomicity in case of documents with many references to other documents in the same or others collections
+
     private final ProductService productService;
 
     private final ProductSearchService searchService;

@@ -1,0 +1,26 @@
+validator: {
+    $jsonSchema: {
+        bsonType: "object",
+        required: ["productUuid", "name", "price", "index"],
+        properties: {
+            name: {
+                bsonType: "string",
+                description: "must be a string and is required"
+            },
+            productUuid: {
+                bsonType: "string",
+                description: "must be a string and is required"
+            },
+            index: {
+                bsonType: "int",
+                minimum: 0,
+                maximum: 2000,
+                description: "must be an integer in [ 0, 2000 ] and is required"
+            },
+            price: {
+                bsonType: "float",
+                description: "must be an float and is required"
+            }
+        }
+    }
+}
