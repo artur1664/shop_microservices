@@ -58,6 +58,11 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <version>2.2.3.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.4</version>
+        </dependency>
         <!--        embedded mongo for tests-->
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
