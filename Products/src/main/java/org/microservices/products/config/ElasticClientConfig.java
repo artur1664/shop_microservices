@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
+import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 @Configuration
-//@EnableReactiveElasticsearchRepositories(basePackages = {"org.microservices.products.repository.elastic"})
 public class ElasticClientConfig {
 
     private final String elasticHost;
@@ -31,5 +34,21 @@ public class ElasticClientConfig {
                 RestClient.builder(new HttpHost(elasticHost, elasticPort, elasticScheme),
                         new HttpHost(elasticHost, elasticPort + 1, elasticScheme)));
 
+    }
+
+    @Bean
+    public ReactiveElasticsearchClient reactiveClient() {
+        ClientConfiguration clientConfiguration = ClientConfiguration.builder()
+                .connectedTo(elasticHost + ":" + elasticPort)
+                .withWebClientConfigurer(webClient -> {
+                    ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                            .codecs(configurer -> configurer.defaultCodecs()
+                                    .maxInMemorySize(-1))
+                            .build();
+                    return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
+                })
+                .build();
+
+        return ReactiveRestClients.create(clientConfiguration);
     }
 }
