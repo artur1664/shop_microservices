@@ -1,6 +1,7 @@
 package org.microservices.products.repository;
 
 import org.junit.jupiter.api.Test;
+import org.microservices.products.repository.mongo.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;

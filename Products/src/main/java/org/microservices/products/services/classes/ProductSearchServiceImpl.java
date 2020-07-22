@@ -2,7 +2,7 @@ package org.microservices.products.services.classes;
 
 import org.microservices.products.model.dto.ProductDto;
 import org.microservices.products.model.mappers.ProductMapper;
-import org.microservices.products.repository.ProductRepository;
+import org.microservices.products.repository.mongo.ProductRepository;
 import org.microservices.products.services.ProductSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

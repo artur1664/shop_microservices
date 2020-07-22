@@ -1,8 +1,8 @@
-package org.microservices.products.repository.classes;
+package org.microservices.products.repository.mongo.classes;
 
 import lombok.extern.slf4j.Slf4j;
 import org.microservices.products.model.Product;
-import org.microservices.products.repository.ProductCustomRepository;
+import org.microservices.products.repository.mongo.ProductCustomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

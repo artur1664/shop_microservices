@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.microservices.products.model.Product;
 import org.microservices.products.model.dto.ProductDto;
 import org.microservices.products.model.mappers.ProductMapper;
-import org.microservices.products.repository.ProductRepository;
+import org.microservices.products.repository.mongo.ProductRepository;
 import org.microservices.products.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

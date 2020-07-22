@@ -1,4 +1,4 @@
-package org.microservices.products.repository;
+package org.microservices.products.repository.mongo;
 
 import org.microservices.products.model.Product;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
