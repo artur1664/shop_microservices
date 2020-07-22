@@ -28,7 +28,8 @@ public class ElasticClientConfig {
     @Bean(destroyMethod = "close")
     public RestHighLevelClient client() {
         return new RestHighLevelClient(
-                RestClient.builder(new HttpHost(elasticHost, elasticPort, elasticScheme)));
+                RestClient.builder(new HttpHost(elasticHost, elasticPort, elasticScheme),
+                        new HttpHost(elasticHost, elasticPort + 1, elasticScheme)));
 
     }
 }
