@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "product")
 @Builder
 public class Product {
 

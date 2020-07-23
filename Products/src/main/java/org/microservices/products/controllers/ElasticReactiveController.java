@@ -21,4 +21,9 @@ public class ElasticReactiveController {
     public Flux<ProductDto> getAll() {
         return reactiveElasticService.getAll();
     }
+
+    @GetMapping("/repo")
+    public Flux<ProductDto> getAllWithSpringDataRepository() {
+        return reactiveElasticService.getAllFromRepository();
+    }
 }

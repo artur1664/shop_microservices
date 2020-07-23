@@ -10,6 +10,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.microservices.products.model.Product;
 import org.microservices.products.model.dto.ProductDto;
 import org.microservices.products.model.mappers.ProductMapper;
+import org.microservices.products.repository.elastic.ProductElasticReactiveRepository;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,12 +21,16 @@ public class ReactiveElasticServiceImpl implements ReactiveElasticService {
 
     private final ReactiveElasticsearchClient reactiveElasticsearchClient;
 
+    private final ProductElasticReactiveRepository productElasticReactiveRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ProductMapper mapper = ProductMapper.INSTANCE;
 
-    public ReactiveElasticServiceImpl(ReactiveElasticsearchClient reactiveElasticsearchClient) {
+    public ReactiveElasticServiceImpl(ReactiveElasticsearchClient reactiveElasticsearchClient,
+                                      ProductElasticReactiveRepository productElasticReactiveRepository) {
         this.reactiveElasticsearchClient = reactiveElasticsearchClient;
+        this.productElasticReactiveRepository = productElasticReactiveRepository;
     }
 
     @Override
@@ -51,5 +56,10 @@ public class ReactiveElasticServiceImpl implements ReactiveElasticService {
                 .filter(o -> o instanceof Product)
                 .map(o -> (Product) o)
                 .map(mapper::productToDto);
+    }
+
+    @Override
+    public Flux<ProductDto> getAllFromRepository() {
+        return productElasticReactiveRepository.findAll().map(mapper::productToDto);
     }
 }

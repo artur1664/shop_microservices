@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
+import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 @Configuration
+@EnableReactiveElasticsearchRepositories(basePackages = {"org.microservices.products.repository.elastic"})
 public class ElasticClientConfig {
 
     private final String elasticHost;
