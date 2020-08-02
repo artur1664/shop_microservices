@@ -7,15 +7,13 @@ version: '3'
 services:
   config-server:
     container_name: config-server
-    build:
-      context: ./ConfigServer
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/config:develop
     networks:
       - microservices
 
   eureka-server:
     container_name: eureka-server
-    build:
-      context: ./EurekaRegistry
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/eureka:develop
     ports:
       - 8761:8761
     networks:
@@ -25,8 +23,7 @@ services:
 
   api-gateway:
     container_name: api-gateway
-    build:
-      context: ./ApiGateway
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/gateway:develop
     ports:
       - 8080:8080
     networks:
@@ -37,8 +34,7 @@ services:
 
   products-service:
     container_name: products-service
-    build:
-      context: ./Products
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/products:develop
     networks:
       - microservices
     depends_on:
@@ -66,37 +62,37 @@ services:
 
     ports:
       - 27017:27017
-#    restart: always
+    #    restart: always
     volumes:
       - /home/IdeaProjects/volumes/mongo1:/data/db
     networks:
       - microservices
 
   mongo2:
-#    hostname: mongo
+    #    hostname: mongo
     image: mongo
     container_name: mongodb2
     command: --replSet rs0
-#    environment:
+    #    environment:
 
     ports:
       - 27018:27017
-#    restart: always
+    #    restart: always
     volumes:
       - /home/IdeaProjects/volumes/mongo2:/data/db
     networks:
       - microservices
 
   mongo3:
-#    hostname: mongo
+    #    hostname: mongo
     image: mongo
     container_name: mongodb3
     command: --replSet rs0
-#    environment:
+    #    environment:
 
     ports:
       - 27019:27017
-#    restart: always
+    #    restart: always
     volumes:
       - /home/IdeaProjects/volumes/mongo3:/data/db
     networks:
@@ -107,14 +103,14 @@ services:
     container_name: zoo1
     hostname: zoo1
     ports:
-     - "2181:2181"
+      - "2181:2181"
     networks:
       - microservices
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
 
-#      ALLOW_ANONYMOUS_LOGIN: yes
+  #      ALLOW_ANONYMOUS_LOGIN: yes
 
   kafka1:
     image: confluentinc/cp-kafka:latest
@@ -122,7 +118,7 @@ services:
     hostname: kafka1
     ports:
       - "9092:9092"
-#      - "19092:19092"
+    #      - "19092:19092"
     networks:
       - microservices
     environment:
@@ -131,9 +127,9 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 1
-#      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-#    volumes:
-#      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
+    #      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    #    volumes:
+    #      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
     depends_on:
       - zoo1
 
@@ -152,9 +148,9 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 2
-#      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-#    volumes:
-#      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
+    #      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    #    volumes:
+    #      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
     depends_on:
       - zoo1
 
