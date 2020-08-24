@@ -7,7 +7,7 @@ stages:
 variables:
   DOCKER_TLS_CERTDIR: ""
 
-#todo cache build results ?
+#todo cache build results ?!
 build:products:
   image: maven:3.6.3-jdk-11-slim
   stage: backend
