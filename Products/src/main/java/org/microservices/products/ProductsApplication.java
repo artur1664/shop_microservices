@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 public class ProductsApplication {
 
-    //todo test remove me
+    //todo test remove me aaaa
 
     public static void main(String[] args) {
         SpringApplication.run(ProductsApplication.class, args);
