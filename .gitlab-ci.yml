@@ -82,6 +82,7 @@ publish:eureka:
   dependencies:
     - build:eureka
   before_script:
+    - ls -la
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
     - docker build -t eureka EurekaRegistry/target/docker
