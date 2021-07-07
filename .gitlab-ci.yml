@@ -1,0 +1,90 @@
+image: docker:latest
+services:
+  - docker:dind
+stages:
+  - backend
+  - publish
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+#todo cache ?
+build:products:
+  image: maven:3.6.3-jdk-11-slim
+  stage: backend
+  script:
+    - mvn -f Products clean install -DskipTests
+  artifacts:
+    expire_in: 1h
+    paths:
+      - Products/target/docker
+publish:products:
+  stage: publish
+  dependencies:
+    - build:products
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker build -t products Products/target/docker
+    - docker tag products "$CI_REGISTRY_IMAGE/products:$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE/products:$CI_COMMIT_REF_SLUG"
+
+build:gateway:
+  image: maven:3.6.3-jdk-11-slim
+  stage: backend
+  script:
+    - mvn -f ApiGateway clean install -DskipTests
+  artifacts:
+    expire_in: 1h
+    paths:
+      - ApiGateway/target/docker
+publish:gateway:
+  stage: publish
+  dependencies:
+    - build:gateway
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker build -t gateway ApiGateway/target/docker
+    - docker tag gateway "$CI_REGISTRY_IMAGE/gateway:$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE/gateway:$CI_COMMIT_REF_SLUG"
+
+build:config:
+  image: maven:3.6.3-jdk-11-slim
+  stage: backend
+  script:
+    - mvn -f ConfigServer clean install -DskipTests
+  artifacts:
+    expire_in: 1h
+    paths:
+      - ConfigServer/target/docker
+publish:config:
+  stage: publish
+  dependencies:
+    - build:config
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker build -t config ConfigServer/target/docker
+    - docker tag config "$CI_REGISTRY_IMAGE"/config:"$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE/config:$CI_COMMIT_REF_SLUG"
+
+build:eureka:
+  image: maven:3.6.3-jdk-11-slim
+  stage: backend
+  script:
+    - mvn -f EurekaRegistry clean install -DskipTests
+  artifacts:
+    expire_in: 1h
+    paths:
+      - EurekaRegistry/target/docker
+publish:eureka:
+  stage: publish
+  dependencies:
+    - build:eureka
+  before_script:
+    - ls -la
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - docker build -t eureka EurekaRegistry/target/docker
+    - docker tag eureka "$CI_REGISTRY_IMAGE"/eureka:"$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE/eureka:$CI_COMMIT_REF_SLUG"

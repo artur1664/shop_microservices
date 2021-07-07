@@ -1,0 +1,26 @@
+server:
+  port: 8070
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+spring:
+  cloud:
+    stream:
+      schemaRegistryClient:
+        endpoint: http://localhost:8081/
+      bindings:
+        input:
+          destination: source.shopdb.product
+      #          content-type: application/*+avro
+      #        output:
+      #          contentType: application/*+avro
+      #          destination: test.coll2
+      #      default-binder: kstream
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+      schema:
+        avro:
+          dynamicSchemaGenerationEnabled: true

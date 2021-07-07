@@ -1,0 +1,243 @@
+version: '3'
+
+#mongo as set
+#https://www.sohamkamani.com/blog/2016/06/30/docker-mongo-replica-set/
+#config = {"_id" : "rs0","members" : [{"_id" : 0,"host" : "mongodb1:27017"},{"_id" : 1,"host" : "mongodb2:27017"},{"_id" : 2,"host" : "mongodb3:27017"}]}
+
+services:
+  config-server:
+    container_name: config-server
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/config:develop
+    networks:
+      - microservices
+
+  eureka-server:
+    container_name: eureka-server
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/eureka:develop
+    ports:
+      - 8761:8761
+    networks:
+      - microservices
+    depends_on:
+      - config-server
+
+  api-gateway:
+    container_name: api-gateway
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/gateway:develop
+    ports:
+      - 8080:8080
+    networks:
+      - microservices
+    depends_on:
+      - config-server
+      - eureka-server
+
+  products-service:
+    container_name: products-service
+    image: registry.gitlab.com/artur.gitlab/shop_microservices/products:develop
+    networks:
+      - microservices
+    depends_on:
+      - config-server
+      - eureka-server
+      - api-gateway
+
+  stock-manager:
+    container_name: stock-manager
+    build:
+      context: ./StockManager
+    networks:
+      - microservices
+    depends_on:
+      - config-server
+      - eureka-server
+      - api-gateway
+
+  mongo1:
+    #    hostname: mongo
+    image: mongo
+    container_name: mongodb1
+    command: --replSet rs0
+    #    environment:
+
+    ports:
+      - 27017:27017
+    #    restart: always
+    volumes:
+      - /home/IdeaProjects/volumes/mongo1:/data/db
+    networks:
+      - microservices
+
+  mongo2:
+    #    hostname: mongo
+    image: mongo
+    container_name: mongodb2
+    command: --replSet rs0
+    #    environment:
+
+    ports:
+      - 27018:27017
+    #    restart: always
+    volumes:
+      - /home/IdeaProjects/volumes/mongo2:/data/db
+    networks:
+      - microservices
+
+  mongo3:
+    #    hostname: mongo
+    image: mongo
+    container_name: mongodb3
+    command: --replSet rs0
+    #    environment:
+
+    ports:
+      - 27019:27017
+    #    restart: always
+    volumes:
+      - /home/IdeaProjects/volumes/mongo3:/data/db
+    networks:
+      - microservices
+
+  zoo1:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zoo1
+    hostname: zoo1
+    ports:
+      - "2181:2181"
+    networks:
+      - microservices
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  #      ALLOW_ANONYMOUS_LOGIN: yes
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka1
+    hostname: kafka1
+    ports:
+      - "9092:9092"
+    #      - "19092:19092"
+    networks:
+      - microservices
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 1
+    #      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    #    volumes:
+    #      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
+    depends_on:
+      - zoo1
+
+  kafka2:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka2
+    hostname: kafka2
+    ports:
+      - "9093:9093"
+    #      - "19093:19093"
+    networks:
+      - microservices
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka2:19093,LISTENER_DOCKER_EXTERNAL://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 2
+    #      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    #    volumes:
+    #      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
+    depends_on:
+      - zoo1
+
+  kafka3:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka3
+    hostname: kafka3
+    ports:
+      - "9094:9094"
+    #      - "19094:19094"
+    networks:
+      - microservices
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka3:19094,LISTENER_DOCKER_EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
+      KAFKA_BROKER_ID: 3
+    #      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+    #    volumes:
+    #      - ./zk-single-kafka-multiple/kafka1/data:/var/lib/kafka/data
+    depends_on:
+      - zoo1
+
+  #connect use too much ram....
+  #  connect:
+  #    container_name: connector_worker
+  #    build:
+  #      context: .
+  #      dockerfile: dockerfile_kafka_connect
+  ##    deploy:
+  ##      resources:
+  ##        limits:
+  ##          memory: 1000m
+  #    hostname: connect
+  #    ports:
+  #      - "8088:8088"
+  #    depends_on:
+  #      - kafka1
+  #      - kafka2
+  #      - kafka3
+  #    environment:
+  #      CONNECT_BOOTSTRAP_SERVERS: kafka1:19092,kafka2:19093,kafka3:19094
+  #      CONNECT_GROUP_ID: "connect-group"
+  #      CONNECT_CONFIG_STORAGE_TOPIC: "connect-config-storage"
+  #      CONNECT_OFFSET_STORAGE_TOPIC: "connect-offset-storage"
+  #      CONNECT_STATUS_STORAGE_TOPIC: "connect-status-storage"
+  #      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+  #      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+  #      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+  #      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+  #      CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components"
+  #      CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
+  #      CONNECT_REST_HOST_NAME: "connect"
+  #      CONNECT_REST_PORT: "8088"
+  #      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+  #      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+  #      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+  #      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+  ##      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-5.1.1.jar
+  #      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+  #      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+  #    networks:
+  #      - microservices
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.3.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - zoo1
+      - kafka1
+      - kafka2
+      - kafka3
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      #     SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zoo1:2181' for some reason this one ends with error
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka1:19092'
+
+volumes:
+  mongodb_volume1:
+  mongodb_volume2:
+  mongodb_volume3:
+
+networks:
+  microservices:
